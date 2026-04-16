@@ -1,0 +1,20 @@
+# core
+node_modules
+.next
+out
+build
+
+# secret
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+gcp-credentials.json
+
+# testing
+coverage
+
+# os
+.DS_Store
+Thumbs.db
