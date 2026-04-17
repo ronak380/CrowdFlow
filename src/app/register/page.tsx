@@ -51,12 +51,25 @@ export default function RegisterPage() {
         .catch(() => {});
       router.replace('/dashboard');
     } catch (err: any) {
+      console.error('Registration Error:', err);
+      console.error('Error Code:', err.code);
+      console.error('Error Message:', err.message);
+      
       const msgs: Record<string,string> = {
         'auth/email-already-in-use': 'An account with this email already exists.',
         'auth/weak-password':        'Password is too weak. Use at least 6 characters.',
         'auth/invalid-email':        'Please enter a valid email address.',
+        'auth/unauthorized-domain':  'Configuration Error: This domain is not authorized for Firebase Auth. Check console.',
+        'permission-denied':         'Database Error: Permission denied to create profile. Check console.',
       };
-      setError(msgs[err.code] ?? 'Registration failed. Please try again.');
+      
+      let finalMsg = msgs[err.code] ?? 'Registration failed. Please try again.';
+      // Append the full message in dev/debugging
+      if (!msgs[err.code]) {
+        finalMsg += ` (Code: ${err.code || 'unknown'})`;
+      }
+      
+      setError(finalMsg);
     } finally { setLoading(false); }
   }
 
