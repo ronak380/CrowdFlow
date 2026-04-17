@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 
 export const dynamic = 'force-dynamic';
@@ -34,6 +34,21 @@ export default function LoginPage() {
     } finally { setLoading(false); }
   }
 
+  async function handleGoogleLogin() {
+    if (loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      router.replace('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="page grid-bg">
       <div className="orb orb-blue" style={{ width: 400, height: 400, top: -150, right: -150 }} />
@@ -45,6 +60,18 @@ export default function LoginPage() {
             <p style={{ color: 'var(--text-secondary)' }}>Sign in to view your stadium queue status.</p>
           </div>
           {error && <div className="alert alert-error">{error}</div>}
+          
+          <button onClick={handleGoogleLogin} disabled={loading} className="btn btn-google btn-full" style={{ marginBottom: 20 }}>
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style={{ width: 18, marginRight: 10 }} />
+            Continue with Google
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '24px 0', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            <div className="divider" style={{ flex: 1 }} />
+            <span>OR EMAIL</span>
+            <div className="divider" style={{ flex: 1 }} />
+          </div>
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="label" htmlFor="email">Email address</label>

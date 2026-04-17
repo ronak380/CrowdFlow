@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { VENUE } from '@/lib/geofence';
+import { YouTubeEmbed } from '@next/third-parties/google';
 
 export const dynamic = 'force-dynamic';
 
@@ -96,6 +97,23 @@ export default function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── YouTube Guide & Experience ── */}
+      <section style={{ padding: '0 24px 80px', position: 'relative', zIndex: 1 }}>
+        <div className="container">
+          <div className="card card-pad" style={{ overflow: 'hidden', padding: 0 }}>
+            <div style={{ padding: '24px 24px 16px' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: 8 }}>Stadium Experience</h2>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 20 }}>
+                Get a feel for the atmosphere at Wankhede Stadium before you arrive!
+              </p>
+            </div>
+            <div style={{ borderRadius: '0 0 var(--r-lg) var(--r-lg)', overflow: 'hidden' }}>
+              <YouTubeEmbed videoid="uFrKxZ_Sj_8" height={300} params="controls=0" />
+            </div>
           </div>
         </div>
       </section>

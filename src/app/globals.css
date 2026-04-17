@@ -140,6 +140,12 @@ a { color: inherit; }
 .btn-sm   { padding: 8px 16px; font-size: 0.85rem; min-height: 36px; }
 .btn-lg   { padding: 16px 36px; font-size: 1.05rem; min-height: 56px; }
 
+.btn-google {
+  background: #ffffff; color: #1f1f1f;
+  border: 1px solid #dadce0;
+}
+.btn-google:hover:not(:disabled) { background: #f8f9fa; border-color: #d2e3fc; transform: translateY(-2px); box-shadow: 0 1px 3px 0 rgba(60,64,67,.30), 0 4px 8px 3px rgba(60,64,67,.15); }
+
 /* ─── Forms ──────────────────────────────────────────────────────────────────── */
 .form-group { display: flex; flex-direction: column; gap: 0; margin-bottom: 18px; }
 .label {

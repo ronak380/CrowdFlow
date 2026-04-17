@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
 import ConfigGuard from '@/components/ConfigGuard';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
@@ -56,8 +56,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Google Analytics 4 (Official Next.js Third-Party Package) */}
+        {/* Google Analytics & GTM (Official Next.js Third-Party Packages) */}
         {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
+        <GoogleTagManager gtmId="GTM-NWX352C6" />
       </head>
       <body className={inter.className}>
         <ConfigGuard>

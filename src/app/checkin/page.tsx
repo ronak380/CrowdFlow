@@ -111,7 +111,18 @@ export default function CheckinPage() {
               <p style={{ color: 'var(--text-secondary)', marginBottom: 20, fontSize: '0.9rem' }}>Your queue number</p>
               <div className="queue-number queue-number-neon">#{result.number}</div>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: 20 }}>Redirecting to live queue…</p>
-              <Link href="/queue" className="btn btn-success btn-full" style={{ marginTop: 16 }}>📍 View Live Queue →</Link>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 24 }}>
+                <Link href="/queue" className="btn btn-success btn-full">📍 View Live Queue →</Link>
+                
+                <button 
+                  className="btn btn-google btn-full" 
+                  onClick={() => alert('Feature Demo: This would typically open the Google Wallet API to save your WAN-2026 match ticket.')}
+                  style={{ background: '#000', color: '#fff', border: 'none' }}
+                >
+                  <img src="https://www.gstatic.com/wallet/api/images/add-to-google-wallet.svg" alt="Add to Google Wallet" style={{ height: 28 }} />
+                </button>
+              </div>
             </div>
           )}
 

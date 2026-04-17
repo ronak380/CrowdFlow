@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { createUserProfile, updateFcmToken } from '@/lib/firestore';
 import { requestNotificationToken } from '@/lib/firebase';
@@ -70,7 +70,33 @@ export default function RegisterPage() {
       }
       
       setError(finalMsg);
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    if (loading) return;
+    setLoading(true);
+    setError('');
+    try {
+      const provider = new GoogleAuthProvider();
+      const cred = await signInWithPopup(auth, provider);
+      // For simplicity in the demo, we create a skeleton profile if they don't have one
+      // In a real app, we'd redirect to a "Finish Profile" page for the ticket ID
+      await createUserProfile(cred.user.uid, {
+        name:     cred.user.displayName || 'Stadium Attendee',
+        email:    cred.user.email || '',
+        phone:    '',
+        ticketId: 'GOOGLE_USER', // Placeholder
+        role:     'user',
+      });
+      router.replace('/dashboard');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -84,6 +110,18 @@ export default function RegisterPage() {
             <p style={{ color: 'var(--text-secondary)' }}>Register once. Never wait in line again.</p>
           </div>
           {error && <div className="alert alert-error">{error}</div>}
+
+          <button onClick={handleGoogleLogin} disabled={loading} className="btn btn-google btn-full" style={{ marginBottom: 20 }}>
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" style={{ width: 18, marginRight: 10 }} />
+            Continue with Google
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '24px 0', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            <div className="divider" style={{ flex: 1 }} />
+            <span>OR EMAIL</span>
+            <div className="divider" style={{ flex: 1 }} />
+          </div>
+
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label className="label" htmlFor="reg-name">Full name</label>
