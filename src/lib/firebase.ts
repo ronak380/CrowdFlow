@@ -1,5 +1,5 @@
 // CrowdFlow — Firebase Client Initialization
-// Refactored for build-time safety & Runtime Configuration Injection
+// Refactored for build-time safety & Production Diagnostics
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
@@ -11,41 +11,44 @@ const firebaseConfig = getClientConfig();
 
 /**
  * Build-safe Firebase initialization.
- * Prevents crashes during Next.js static generation if API keys are missing.
  */
 function getClientApp(): FirebaseApp | null {
-  // If we're on the server and missing an API key, don't try to initialize.
-  // This satisfies the Next.js build worker.
+  // If we're missing an API key, we cannot initialize Firebase.
   if (!firebaseConfig.apiKey) {
     if (typeof window !== 'undefined') {
-      console.warn('Firebase API key is missing. Ensure variables are set in Cloud Run.');
+      console.error('CRITICAL: Firebase API key is missing. Check /api/diagnostics');
     }
     return null; 
   }
 
-  if (getApps().length > 0) return getApp();
-  return initializeApp(firebaseConfig);
+  try {
+    if (getApps().length > 0) return getApp();
+    return initializeApp(firebaseConfig);
+  } catch (err) {
+    console.error('Firebase initialization error:', err);
+    return null;
+  }
 }
 
 const app = getClientApp();
 
-// Guarded exports for services. 
-// These will throw if accessed at runtime without a valid app, but won't crash the build loader.
-export const auth: Auth = app ? getAuth(app) : ({} as Auth);
-export const db: Firestore = app ? getFirestore(app) : ({} as Firestore);
+/**
+ * Robust exports. 
+ * If app is null, these services are technically 'undefined'.
+ * We export them with type-casting to satisfy the compiler, 
+ * but our hooks (like useAuth) must check if app exists.
+ */
+export const auth: Auth = app ? getAuth(app) : (null as unknown as Auth);
+export const db: Firestore = app ? getFirestore(app) : (null as unknown as Firestore);
 export { app };
 
-// Lazy-loaded to avoid SSR issues
 export async function getMessagingInstance() {
   if (typeof window === 'undefined' || !app) return null;
   try {
     const { getMessaging, isSupported } = await import('firebase/messaging');
-    const supported = await isSupported();
-    if (!supported) return null;
+    if (!(await isSupported())) return null;
     return getMessaging(app);
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
 export async function getAnalyticsInstance() {
@@ -53,12 +56,9 @@ export async function getAnalyticsInstance() {
   try {
     const { getAnalytics } = await import('firebase/analytics');
     return getAnalytics(app);
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }
 
-// Request FCM permission and return token
 export async function requestNotificationToken(): Promise<string | null> {
   if (typeof window === 'undefined' || !app) return null;
   try {
@@ -69,7 +69,5 @@ export async function requestNotificationToken(): Promise<string | null> {
     const { getToken } = await import('firebase/messaging');
     const vapidKey = firebaseConfig.vapidKey;
     return await getToken(messaging, { vapidKey, serviceWorkerRegistration: undefined });
-  } catch {
-    return null;
-  }
+  } catch { return null; }
 }

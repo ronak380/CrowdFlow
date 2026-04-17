@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { auth, db, app } from '@/lib/firebase';
 import type { UserProfile } from '@/lib/firestore';
 
 interface AuthState {
@@ -13,14 +13,22 @@ interface AuthState {
   profile: UserProfile | null;
   loading: boolean;
   isAdmin: boolean;
+  isConfigMissing: boolean;
 }
 
 export function useAuth(): AuthState {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const isConfigMissing = !app || !auth || !db;
 
   useEffect(() => {
+    // If Firebase didn't initialize, stop here and show loading as finished
+    if (isConfigMissing) {
+      setLoading(false);
+      return;
+    }
+
     let profileUnsub: (() => void) | null = null;
 
     const authUnsub = onAuthStateChanged(auth, (firebaseUser) => {
@@ -30,7 +38,7 @@ export function useAuth(): AuthState {
       if (profileUnsub) { profileUnsub(); profileUnsub = null; }
 
       if (firebaseUser) {
-        // Real-time profile subscription — 1 persistent listener, no polling
+        // Real-time profile subscription
         profileUnsub = onSnapshot(doc(db, 'users', firebaseUser.uid), (snap) => {
           if (snap.exists()) {
             setProfile({ uid: firebaseUser.uid, ...snap.data() } as UserProfile);
@@ -49,12 +57,13 @@ export function useAuth(): AuthState {
       authUnsub();
       if (profileUnsub) profileUnsub();
     };
-  }, []);
+  }, [isConfigMissing]);
 
   return {
     user,
     profile,
     loading,
     isAdmin: profile?.role === 'admin',
+    isConfigMissing,
   };
 }

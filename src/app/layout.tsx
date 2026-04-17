@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
+import ConfigGuard from '@/components/ConfigGuard';
 
 export const metadata: Metadata = {
   title: 'CrowdFlow — Smart Stadium Queue Management',
@@ -55,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Google Analytics 4 — loaded only when GA ID is configured */}
+        {/* Google Analytics 4 */}
         {gaMeasurementId && (
           <>
             <script
@@ -78,7 +79,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </>
         )}
       </head>
-      <body>{children}</body>
+      <body>
+        <ConfigGuard>
+          {children}
+        </ConfigGuard>
+      </body>
     </html>
   );
 }
