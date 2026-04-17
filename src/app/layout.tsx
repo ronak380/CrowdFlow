@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
 import ConfigGuard from '@/components/ConfigGuard';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,28 +59,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Google Analytics 4 */}
-        {gaMeasurementId && (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${gaMeasurementId}', {
-                    page_path: window.location.pathname,
-                    send_page_view: true,
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
+        {/* Google Analytics 4 (Official Next.js Third-Party Package) */}
+        {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
       </head>
       <body>
         <ConfigGuard>
