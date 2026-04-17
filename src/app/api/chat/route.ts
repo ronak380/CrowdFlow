@@ -25,13 +25,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: response.text() });
   } catch (error: any) {
     console.error('Gemini API Error:', error);
-    
-    // Extract a readable error message from the error object
     const errorMsg = error?.message || 'Unknown network error';
     
-    return NextResponse.json(
-      { error: `Failed: ${errorMsg}` }, 
-      { status: 500 }
-    );
+    try {
+      // If it fails, let's fetch the exact list of models this API key actually has access to
+      const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
+      const modelsData = await modelsRes.json();
+      const availableModels = modelsData?.models?.map((m: any) => m.name.replace('models/', '')).join(', ') || 'none';
+      
+      return NextResponse.json(
+        { error: `Failed: ${errorMsg}. Your allowed models: ${availableModels}` }, 
+        { status: 500 }
+      );
+    } catch {
+      return NextResponse.json(
+        { error: `Failed: ${errorMsg}` }, 
+        { status: 500 }
+      );
+    }
   }
 }
