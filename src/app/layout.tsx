@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
 import ConfigGuard from '@/components/ConfigGuard';
 import { GoogleAnalytics } from '@next/third-parties/google';
+
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const dynamic = 'force-dynamic';
 
@@ -43,12 +46,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
         <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
         <meta name="mobile-web-app-capable" content="yes" />
 
@@ -62,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Google Analytics 4 (Official Next.js Third-Party Package) */}
         {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
       </head>
-      <body>
+      <body className={inter.className}>
         <ConfigGuard>
           {children}
         </ConfigGuard>
