@@ -75,7 +75,8 @@ export default function CheckinPage() {
     return <main className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span className="spinner spinner-lg" /></main>;
   }
 
-  const canCheckin = geo.status === 'within' && checkinStatus === 'idle';
+  const isWithin = geo.status === 'within';
+  const canCheckin = isWithin && checkinStatus === 'idle';
 
   const geoStatusConfig = {
     idle:        { color: 'var(--text-muted)',  icon: '⏳', label: 'Tap "Detect Location" to begin' },
@@ -182,7 +183,7 @@ export default function CheckinPage() {
               <button
                 id="btn-checkin-submit"
                 onClick={handleCheckin}
-                disabled={!canCheckin || checkinStatus === 'loading'}
+                disabled={!canCheckin}
                 className="btn btn-success btn-full"
                 style={{ fontSize: '1.05rem' }}
                 aria-busy={checkinStatus === 'loading'}
