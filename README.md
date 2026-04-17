@@ -2,53 +2,42 @@
 
 **High-Performance Crowd Management PWA for Wankhede Stadium**
 
-CrowdFlow is a real-time, geo-fenced queue management system designed to eliminate physical lines at sports venues. Built for the **Prompt Wars Virtual** hackathon, it focuses on efficiency, security, and premium user experience.
+**Live Demo:** [https://crowdflow-915016433208.europe-west1.run.app](https://crowdflow-915016433208.europe-west1.run.app)
+
+CrowdFlow is a real-time, geo-fenced queue management system designed to eliminate physical lines at sports venues. Built exclusively for the **Prompt Wars Virtual** hackathon, it focuses on extreme efficiency, robust security, and a premium, zero-friction user experience.
+
+---
 
 ## 🚀 Key Features
 
--   **Geo-Fenced Check-In**: Automatic check-in activation using Haversine formula when within 300m of Wankhede Stadium. **Zero external API costs** (no Google Maps API needed).
--   **Shortest Queue First (SQF)**: Atomic assignment engine that balances load across 5 gates in real-time.
--   **Live Dashboard**: Real-time "Now Serving" updates using Firestore `onSnapshot` (no polling).
--   **Automated Missed-Slot Management**: 10-minute expiry logic with easy rejoin options to keep the crowd moving.
--   **Push Notifications**: FCM integration for turn alerts ("Your turn is near!" and "Proceed to gate!").
--   **Admin Control Panel**: Advanced gate management for stadium staff to advance numbers and monitor venue fill rates.
+- **📍 Geo-Fenced Check-In**: Actively monitors distance from Wankhede Stadium using the Haversine formula. The check-in unlocks precisely at 300 meters—using **zero external API costs** (no Google Maps API needed).
+- **🛤 Shortest Queue First (SQF)**: A mathematically rigorous assignment engine that uses atomic Firebase Admin transactions to balance load across 5 gates in real-time without bottlenecks or race conditions.
+- **⏱ Live Dashboard**: Real-time "Now Serving" and "People Ahead" tracking powered by Firestore `onSnapshot` listeners (drastically faster and more cost-effective than HTTP polling).
+- **🕰 Automated Missed-Slot Management**: Built-in 10-minute expiry logic prevents ghost queues, automatically clearing missed attendees with one-tap "rejoin" mechanisms.
+- **🛡 Admin Control Panel**: A master switchboard for stadium staff to manually advance queues, monitor venue fill rates, and run global diagnostics.
+- **🛠 Production Diagnostic Engine**: Fully runtime-injected environment variables allow for live configuration changes directly from Google Cloud Run without rebuilding the Next.js container.
 
-## 🛠 Tech Stack
+---
 
--   **Framework**: Next.js 14 (App Router)
--   **Styling**: Vanilla CSS (Glassmorphism, Dark Stadium Theme)
--   **Database**: Firebase Firestore
--   **Auth**: Firebase Authentication (Email + Google SSO)
--   **Notifications**: Firebase Cloud Messaging (FCM)
--   **Deployment**: Google Cloud Run + Cloud Build
--   **PWA**: `next-pwa` for offline support and home screen installation.
+## 🛠 Technical Architecture
 
-## 📋 Environment Setup
-
-1.  Copy `.env.local.example` to `.env.local`.
-2.  Fill in your Firebase config (Client keys and Admin SDK Service Account).
-3.  Set a `CRON_SECRET` for securing the missed-slot API.
-
-## 🏗 Deployment to Google Cloud
-
-The project includes a production-ready `Dockerfile` and `cloudbuild.yaml`.
-
-```bash
-# To deploy manually using Cloud Build
-gcloud builds submit --config cloudbuild.yaml
-```
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Pure Vanilla CSS featuring a premium "Glassmorphism" dark stadium theme
+- **Database/Auth**: Firebase Firestore & Firebase Authentication (Email + Password)
+- **Deployment & DevOps**: Docker container deployed via Google Cloud Build to fully managed Google Cloud Run endpoints.
+- **PWA**: Configured with `next-pwa` for offline caching and home-screen installation.
 
 ## 🧪 Testing
 
-```bash
-# Run unit tests
-npm test
-```
+We built mission-critical automated tests using **Jest** to mathematically verify core mechanics:
+- **`__tests__/queue.test.ts`**: Simulates hundreds of incoming users and forcefully evaluates the atomic `assignQueue` transaction to guarantee zero data overlap and shortest-gate routing.
+- **`__tests__/geofence.test.ts`**: Asserts extreme boundary coordinates against Wankhede's core location to verify spoofers are rejected and only attendees inside the 300m radius are admitted.
 
-## 📜 Problem Statement Alignment
+---
 
--   **Crowd Movement**: Balanced gate assignments prevent bottlenecks.
--   **Waiting Times**: Real-time ETA and "Ahead of you" count reduce perceived wait time.
--   **Efficiency**: Minimized API calls and atomic transactions ensure scalability.
--   **Security**: Server-side geo-validation and strict Firestore rules.
--   **Accessibility**: High-contrast dark theme, ARIA labels, and PWA offline support.
+## 📜 Alignment with the Prompt Wars Challenge
+
+1. **Crowd Movement**: Balanced, automated gate assignments ensure security scanners operate at maximum throughput.
+2. **Reduced Waiting Times**: Giving attendees a Live ETA on their phones significantly reduces the psychological toll of waiting. They only walk to the gate when their number is called.
+3. **Efficiency**: Zero-cost Haversine tracking, no-polling database listeners, and Dockerized cloud routing keeps server load trivial even at maximum stadium capacity.
+4. **Resiliency**: Built-in `ConfigGuard` and server-side environment variable bridging prevents Dockerized Next.js apps from ever showing a blank crash screen.
