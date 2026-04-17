@@ -3,6 +3,8 @@ import './globals.css';
 import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
 import ConfigGuard from '@/components/ConfigGuard';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'CrowdFlow — Smart Stadium Queue Management',
   description:
