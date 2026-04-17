@@ -1,8 +1,8 @@
 // CrowdFlow — Queue Assignment Engine (Server-Side)
 // Uses Firestore transactions to guarantee atomic, race-condition-free assignment
 
-import { FieldValue } from 'firebase-admin/firestore';
-import { adminDb, adminMessaging } from './firebase-admin';
+import { FieldValue, DocumentSnapshot } from 'firebase-admin/firestore';
+import { getAdminDb, getAdminMessaging } from './firebase-admin';
 import { 
   QUEUE_GATES, 
   QUEUE_IDS, 
@@ -13,32 +13,33 @@ import {
 
 /**
  * Atomically assign the user to the shortest available queue.
- * Runs inside a Firestore transaction — safe for concurrent check-ins.
  */
 export async function assignQueue(userId: string): Promise<AssignResult> {
-  const usersRef = adminDb.collection('users');
-  const queuesRef = adminDb.collection('queues');
-  const slotsRef = adminDb.collection('slots');
+  const db = getAdminDb();
+  const usersRef = db.collection('users');
+  const queuesRef = db.collection('queues');
+  const slotsRef = db.collection('slots');
 
   try {
-    return await adminDb.runTransaction(async (tx) => {
+    return await db.runTransaction(async (tx) => {
       // 1. Validate user exists and has no active slot
       const userSnap = await tx.get(usersRef.doc(userId));
       if (!userSnap.exists) return { success: false, error: 'user_not_found' };
-      const userData = userSnap.data()!;
-      if (userData.activeSlotId) return { success: false, error: 'already_checked_in' };
+      const userData = userSnap.data();
+      if (!userData || userData.activeSlotId) return { success: false, error: 'already_checked_in' };
 
       // 2. Read all queues to find the one with fewest active members
       const queueSnaps = await Promise.all(
         QUEUE_IDS.map((id) => tx.get(queuesRef.doc(id)))
       );
 
-      let bestQueueSnap: FirebaseFirestore.DocumentSnapshot | null = null;
+      let bestQueueSnap: DocumentSnapshot | null = null;
       let minActive = Infinity;
 
       for (const snap of queueSnaps) {
         if (!snap.exists) continue;
-        const data = snap.data()!;
+        const data = snap.data();
+        if (!data) continue;
         const active: number = data.activeCount ?? 0;
         if (active < QUEUE_CAPACITY && active < minActive) {
           minActive = active;
@@ -91,16 +92,16 @@ export async function assignQueue(userId: string): Promise<AssignResult> {
 
 /**
  * Advance the "currentServing" number for a given queue.
- * Marks the current slot as completed, notifies next user via FCM.
  */
 export async function advanceQueue(
   queueId: string
 ): Promise<{ success: boolean; newServing?: number }> {
-  const queuesRef = adminDb.collection('queues');
-  const slotsRef = adminDb.collection('slots');
+  const db = getAdminDb();
+  const queuesRef = db.collection('queues');
+  const slotsRef = db.collection('slots');
 
   try {
-    return await adminDb.runTransaction(async (tx) => {
+    return await db.runTransaction(async (tx) => {
       const qSnap = await tx.get(queuesRef.doc(queueId));
       if (!qSnap.exists) return { success: false };
 
@@ -135,8 +136,7 @@ export async function advanceQueue(
 }
 
 /**
- * Send FCM push notification to a specific token.
- * Fails silently — notification is non-critical.
+ * Send FCM push notification.
  */
 export async function sendPushNotification(
   fcmToken: string,
@@ -146,7 +146,8 @@ export async function sendPushNotification(
 ): Promise<void> {
   if (!fcmToken) return;
   try {
-    await adminMessaging.send({
+    const messaging = getAdminMessaging();
+    await messaging.send({
       token: fcmToken,
       notification: { title, body },
       data,
@@ -159,24 +160,24 @@ export async function sendPushNotification(
 }
 
 /**
- * Mark all expired waiting slots as "missed" and free their queue capacity.
- * Called by the /api/missed cron route every 2 minutes via Cloud Scheduler.
+ * Process missed slots.
  */
 export async function processMissedSlots(): Promise<{ processed: number }> {
   const now = new Date();
-  const slotsRef = adminDb.collection('slots');
-  const usersRef = adminDb.collection('users');
-  const queuesRef = adminDb.collection('queues');
+  const db = getAdminDb();
+  const slotsRef = db.collection('slots');
+  const usersRef = db.collection('users');
+  const queuesRef = db.collection('queues');
 
   const expiredSnap = await slotsRef
     .where('status', '==', 'waiting')
     .where('expiresAt', '<=', now)
-    .limit(50) // process in batches to stay within transaction limits
+    .limit(50)
     .get();
 
   if (expiredSnap.empty) return { processed: 0 };
 
-  const batch = adminDb.batch();
+  const batch = db.batch();
   const queueDecrements: Record<string, number> = {};
 
   for (const slotDoc of expiredSnap.docs) {
@@ -194,7 +195,7 @@ export async function processMissedSlots(): Promise<{ processed: number }> {
 
   await batch.commit();
 
-  // Send FCM notifications (non-blocking)
+  // Send FCM notifications
   for (const slotDoc of expiredSnap.docs) {
     const data = slotDoc.data();
     if (data.fcmToken) {
@@ -211,12 +212,12 @@ export async function processMissedSlots(): Promise<{ processed: number }> {
 }
 
 /**
- * Seed the 5 queue documents if they don't already exist.
- * Safe to call multiple times — only creates missing queues.
+ * Seed queues.
  */
 export async function seedQueues(): Promise<void> {
-  const queuesRef = adminDb.collection('queues');
-  const batch = adminDb.batch();
+  const db = getAdminDb();
+  const queuesRef = db.collection('queues');
+  const batch = db.batch();
   let created = 0;
 
   for (const [id, gate] of Object.entries(QUEUE_GATES)) {

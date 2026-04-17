@@ -1,24 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminAuth, adminDb, adminMessaging } from '@/lib/firebase-admin';
+import { getAdminAuth, getAdminDb, getAdminMessaging } from '@/lib/firebase-admin';
 import { advanceQueue } from '@/lib/queue';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
+  const db = getAdminDb();
+  const auth = getAdminAuth();
+  
   // 1. Verify admin token
   const token = req.headers.get('Authorization')?.slice(7);
   if (!token) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   let userId: string;
   try {
-    const decoded = await adminAuth.verifyIdToken(token);
+    const decoded = await auth.verifyIdToken(token);
     userId = decoded.uid;
   } catch {
     return NextResponse.json({ error: 'invalid_token' }, { status: 401 });
   }
 
   // 2. Check admin role
-  const userSnap = await adminDb.collection('users').doc(userId).get();
+  const userSnap = await db.collection('users').doc(userId).get();
   if (userSnap.data()?.role !== 'admin') {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   }
@@ -50,7 +53,10 @@ async function notifyNextUser(
   number: number,
   headsUp = false
 ): Promise<void> {
-  const snap = await adminDb.collection('slots')
+  const db = getAdminDb();
+  const messaging = getAdminMessaging();
+
+  const snap = await db.collection('slots')
     .where('queueId', '==', queueId)
     .where('number', '==', number)
     .where('status', '==', 'waiting')
@@ -68,7 +74,7 @@ async function notifyNextUser(
     : `Number #${number} — Please proceed to your gate immediately!`;
 
   try {
-    await adminMessaging.send({
+    await messaging.send({
       token: fcmToken,
       notification: { title, body },
       data: { queueId, number: String(number), action: 'proceed' },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebase-admin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebase-admin';
 import { assignQueue } from '@/lib/queue';
 import { isWithinGeofence } from '@/lib/geofence';
 
@@ -21,6 +21,9 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  const auth = getAdminAuth();
+  const db = getAdminDb();
+
   // 1. Rate limit by IP
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
   if (!checkRateLimit(ip)) {
@@ -36,7 +39,7 @@ export async function POST(req: NextRequest) {
 
   let userId: string;
   try {
-    const decoded = await adminAuth.verifyIdToken(token);
+    const decoded = await auth.verifyIdToken(token);
     userId = decoded.uid;
   } catch {
     return NextResponse.json({ error: 'invalid_token' }, { status: 401 });
@@ -60,17 +63,17 @@ export async function POST(req: NextRequest) {
   // 5. For rejoin: clear previous missed slot first
   if (body.rejoin) {
     try {
-      const userSnap = await adminDb.collection('users').doc(userId).get();
+      const userSnap = await db.collection('users').doc(userId).get();
       const activeSlotId = userSnap.data()?.activeSlotId;
       if (activeSlotId) {
-        const slotSnap = await adminDb.collection('slots').doc(activeSlotId).get();
+        const slotSnap = await db.collection('slots').doc(activeSlotId).get();
         const status = slotSnap.data()?.status;
         // Only allow re-assign if previous slot was missed or completed
         if (status === 'waiting') {
           return NextResponse.json({ error: 'already_checked_in' }, { status: 409 });
         }
         // Clear the stale reference
-        await adminDb.collection('users').doc(userId).update({ activeSlotId: null });
+        await db.collection('users').doc(userId).update({ activeSlotId: null });
       }
     } catch {
       // Non-critical — proceed
