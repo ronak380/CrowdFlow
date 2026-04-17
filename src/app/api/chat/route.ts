@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
     const systemInstruction = "You are CrowdBot, an official AI assistant for Wankhede Stadium's CrowdFlow queue management system. Keep answers helpful, concise, and related to stadium navigation, queues, rules, and waiting times. Maximum 2 sentences.";
     
@@ -25,8 +25,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: response.text() });
   } catch (error: any) {
     console.error('Gemini API Error:', error);
+    
+    // Extract a readable error message from the error object
+    const errorMsg = error?.message || 'Unknown network error';
+    
     return NextResponse.json(
-      { error: 'Failed to generate response.' }, 
+      { error: `Failed: ${errorMsg}` }, 
       { status: 500 }
     );
   }
