@@ -59,6 +59,19 @@ export default function LoginPage() {
           <p style={{ textAlign: 'center', marginTop: 24, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             Don't have an account? <Link href="/register" style={{ color: 'var(--electric)', fontWeight: 600 }}>Register →</Link>
           </p>
+
+          {/* Evaluator Notice for Hackathon */}
+          <div style={{ marginTop: 32, padding: 16, background: 'rgba(0, 245, 160, 0.05)', border: '1px solid var(--neon-dim)', borderRadius: 'var(--r-lg)' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '1.2rem' }}>🛡️</span>
+              <div>
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>Hackathon Evaluators</h3>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                  This application features a dual-module architecture. To test the <strong>Security Control Panel</strong> and queue advancement logic, you must log in with an account that has Firebase Custom Claims set to <code>admin: true</code>.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
