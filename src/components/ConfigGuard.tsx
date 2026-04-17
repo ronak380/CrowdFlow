@@ -38,7 +38,7 @@ export default function ConfigGuard({ children }: { children: React.ReactNode })
 
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: '#4f9fff', marginBottom: 12, textAlign: 'left' }}>Step 2: Add to Cloud Run</h2>
           <p style={{ fontSize: '0.82rem', color: '#8899aa', textAlign: 'left', lineHeight: 1.5 }}>
-            Go to your **Cloud Run Settings** > **Variables** and add all the <code>NEXT_PUBLIC_FIREBASE_...</code> keys found in your <code>.env.local</code> file.
+            Go to your **Cloud Run Settings** {'>'} **Variables** and add all the <code>NEXT_PUBLIC_FIREBASE_...</code> keys found in your <code>.env.local</code> file.
           </p>
         </div>
 
