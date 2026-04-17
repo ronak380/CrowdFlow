@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
 import { QUEUE_GATES } from '@/lib/queue-constants';
+import AIChatBot from '@/components/AIChatBot';
 
 export const dynamic = 'force-dynamic';
 
@@ -139,6 +140,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+      <AIChatBot />
     </main>
   );
 }

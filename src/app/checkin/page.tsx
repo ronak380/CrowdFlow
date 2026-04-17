@@ -141,6 +141,20 @@ export default function CheckinPage() {
                 </div>
               </div>
 
+              {/* Google Maps Visual Indicator */}
+              <div style={{ marginBottom: 24, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', height: 180 }}>
+                <iframe
+                  title="Wankhede Stadium Location"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  allowFullScreen
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}&q=Wankhede+Stadium,Mumbai`}
+                />
+              </div>
+
               {errorMsg && <div className="alert alert-error">{errorMsg}</div>}
 
               <button onClick={handleCheckin} disabled={!canCheckin} className="btn btn-success btn-full" style={{ fontSize: '1.05rem' }}>
