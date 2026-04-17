@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { getFirebaseRuntimeConfig } from '@/lib/runtime-config';
 
 export const metadata: Metadata = {
   title: 'CrowdFlow — Smart Stadium Queue Management',
@@ -33,6 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const firebaseConfig = getFirebaseRuntimeConfig();
 
   return (
     <html lang="en">
@@ -45,6 +47,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
         <meta name="mobile-web-app-capable" content="yes" />
+
+        {/* Runtime Configuration Injection */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__FIREBASE_CONFIG__ = ${JSON.stringify(firebaseConfig)};`,
+          }}
+        />
 
         {/* Google Analytics 4 — loaded only when GA ID is configured */}
         {gaMeasurementId && (

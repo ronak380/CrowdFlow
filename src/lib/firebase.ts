@@ -1,19 +1,13 @@
 // CrowdFlow — Firebase Client Initialization
-// Refactored for build-time safety (GCP Build / SSG)
+// Refactored for build-time safety & Runtime Configuration Injection
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { getClientConfig } from './runtime-config';
 
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+// Read configuration from either window (runtime) or process.env (fallback)
+const firebaseConfig = getClientConfig();
 
 /**
  * Build-safe Firebase initialization.
@@ -24,7 +18,7 @@ function getClientApp(): FirebaseApp | null {
   // This satisfies the Next.js build worker.
   if (!firebaseConfig.apiKey) {
     if (typeof window !== 'undefined') {
-      console.warn('Firebase API key is missing. Client-side features may fail.');
+      console.warn('Firebase API key is missing. Ensure variables are set in Cloud Run.');
     }
     return null; 
   }
@@ -73,7 +67,7 @@ export async function requestNotificationToken(): Promise<string | null> {
     const messaging = await getMessagingInstance();
     if (!messaging) return null;
     const { getToken } = await import('firebase/messaging');
-    const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+    const vapidKey = firebaseConfig.vapidKey;
     return await getToken(messaging, { vapidKey, serviceWorkerRegistration: undefined });
   } catch {
     return null;
