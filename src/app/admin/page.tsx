@@ -8,6 +8,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAllQueues } from '@/hooks/useQueue';
 import { QUEUE_GATES } from '@/lib/queue-constants';
 
+export const dynamic = 'force-dynamic';
+
 const GATE_COLORS: Record<string, string> = {
   Q1: '#4f9fff', Q2: '#00f5a0', Q3: '#ffb800', Q4: '#ff6b9d', Q5: '#c084fc',
 };
@@ -108,13 +110,11 @@ export default function AdminPage() {
       <div style={{ flex: 1, padding: '28px 20px 80px', position: 'relative', zIndex: 1 }}>
         <div className="container-lg anim-fade-in" style={{ width: '100%' }}>
 
-          {/* Header */}
           <div style={{ marginBottom: 28 }}>
             <h1 style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: 4 }}>Gate Control Panel</h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Wankhede Stadium · Live queue management</p>
           </div>
 
-          {/* Overall stats */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 28 }}>
             {[
               { label: 'Active Attendees', value: totalActive, color: 'var(--electric)' },
@@ -128,7 +128,6 @@ export default function AdminPage() {
             ))}
           </div>
 
-          {/* Fill bar */}
           <div style={{ marginBottom: 28 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 6 }}>
               <span>Overall venue fill</span><span>{fillPct}%</span>
@@ -140,7 +139,6 @@ export default function AdminPage() {
 
           {advanceError && <div className="alert alert-error" role="alert">{advanceError}</div>}
 
-          {/* Per-gate queue cards */}
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Gate Queues</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 32 }}>
             {queues.map(q => {
@@ -192,11 +190,8 @@ export default function AdminPage() {
             })}
           </div>
 
-          {/* Admin utilities */}
           <h2 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Admin Utilities</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-
-            {/* Seed button */}
             <div className="card card-pad-sm" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.92rem' }}>Seed Queue Documents</div>
@@ -214,7 +209,6 @@ export default function AdminPage() {
               </button>
             </div>
 
-            {/* Process missed slots */}
             <div className="card card-pad-sm" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '0.92rem' }}>Process Missed Slots</div>

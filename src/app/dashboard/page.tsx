@@ -6,6 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
 import { QUEUE_GATES } from '@/lib/queue-constants';
 
+export const dynamic = 'force-dynamic';
+
 export default function DashboardPage() {
   const router = useRouter();
   const { profile, loading } = useAuth();
@@ -32,7 +34,6 @@ export default function DashboardPage() {
     <main className="page grid-bg">
       <div className="orb orb-blue" style={{ width: 400, height: 400, top: -100, right: -100 }} aria-hidden />
 
-      {/* Navbar */}
       <nav className="navbar">
         <Link href="/dashboard" className="navbar-logo">⚡ CrowdFlow</Link>
         <div className="navbar-actions">
@@ -46,7 +47,6 @@ export default function DashboardPage() {
       <div style={{ flex: 1, padding: '32px 20px 80px', position: 'relative', zIndex: 1 }}>
         <div className="container anim-fade-in" style={{ width: '100%' }}>
 
-          {/* Greeting */}
           <div style={{ marginBottom: 28 }}>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
               {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -56,7 +56,6 @@ export default function DashboardPage() {
             </h1>
           </div>
 
-          {/* ── Active Queue Slot ── */}
           {hasActiveSlot && slot && queue ? (
             <div className="card card-pad anim-slide-up" style={{ marginBottom: 20, borderColor: 'rgba(79,159,255,0.3)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
@@ -74,7 +73,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Now serving */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)', borderRadius: 'var(--r-md)', padding: '12px 16px', marginBottom: 16 }}>
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Now serving</span>
                 <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--neon)' }}>
@@ -82,7 +80,6 @@ export default function DashboardPage() {
                 </span>
               </div>
 
-              {/* Progress */}
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 6 }}>
                   <span>Progress</span>
@@ -93,7 +90,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* ETA */}
               {waitMins !== null && (
                 <div className="alert alert-info" style={{ margin: 0, textAlign: 'center' }}>
                   ⏱ Estimated wait: <strong>~{waitMins} minutes</strong>
@@ -105,7 +101,6 @@ export default function DashboardPage() {
               </Link>
             </div>
           ) : slot?.status === 'missed' ? (
-            /* ── Missed slot ── */
             <div className="card card-pad anim-slide-up" style={{ marginBottom: 20, borderColor: 'rgba(255,71,87,0.3)', textAlign: 'center' }}>
               <div style={{ fontSize: '3rem', marginBottom: 12 }}>😔</div>
               <h2 style={{ fontWeight: 700, marginBottom: 8 }}>You missed your slot</h2>
@@ -115,7 +110,6 @@ export default function DashboardPage() {
               <Link href="/missed" className="btn btn-amber btn-full" id="btn-rejoin-queue">Rejoin Queue →</Link>
             </div>
           ) : (
-            /* ── No slot yet ── */
             <div className="card card-pad anim-slide-up" style={{ marginBottom: 20, textAlign: 'center' }}>
               <div style={{ fontSize: '3rem', marginBottom: 12, animation: 'float 3s ease-in-out infinite' }}>🏏</div>
               <h2 style={{ fontWeight: 700, marginBottom: 8 }}>Ready to check in?</h2>
@@ -131,7 +125,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* ── Quick Info ── */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             <div className="card card-pad-sm" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--electric)' }}>{profile.ticketId}</div>
