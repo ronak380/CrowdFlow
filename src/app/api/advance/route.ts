@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb, adminMessaging } from '@/lib/firebase-admin';
 import { advanceQueue } from '@/lib/queue';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   // 1. Verify admin token
   const token = req.headers.get('Authorization')?.slice(7);

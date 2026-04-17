@@ -3,6 +3,8 @@ import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { assignQueue } from '@/lib/queue';
 import { isWithinGeofence } from '@/lib/geofence';
 
+export const dynamic = 'force-dynamic';
+
 // Simple in-memory rate limiter: 5 check-ins per IP per minute
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 

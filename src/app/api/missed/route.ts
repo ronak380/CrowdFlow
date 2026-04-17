@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processMissedSlots } from '@/lib/queue';
 
+export const dynamic = 'force-dynamic';
+
 // Called by:
 //   1. Cloud Scheduler every 2 minutes (with CRON_SECRET header)
 //   2. Admin panel manually (with 'admin-manual-trigger')
