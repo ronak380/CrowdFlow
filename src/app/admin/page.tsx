@@ -6,7 +6,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { useAllQueues } from '@/hooks/useQueue';
-import { QUEUE_GATES } from '@/lib/queue';
+import { QUEUE_GATES } from '@/lib/queue-constants';
 
 const GATE_COLORS: Record<string, string> = {
   Q1: '#4f9fff', Q2: '#00f5a0', Q3: '#ffb800', Q4: '#ff6b9d', Q5: '#c084fc',

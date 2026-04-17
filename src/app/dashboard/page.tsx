@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
-import { QUEUE_GATES } from '@/lib/queue';
+import { QUEUE_GATES } from '@/lib/queue-constants';
 
 export default function DashboardPage() {
   const router = useRouter();

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
-import { QUEUE_GATES } from '@/lib/queue';
+import { QUEUE_GATES } from '@/lib/queue-constants';
 
 const GATE_COLORS: Record<string, string> = {
   Q1: '#4f9fff', Q2: '#00f5a0', Q3: '#ffb800', Q4: '#ff6b9d', Q5: '#c084fc',
@@ -131,7 +131,7 @@ export default function QueuePage() {
                   <span>{progress}%</span>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${progress}%` }} role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} />
+                  <div className="progress-fill" style={{ width: `${progress}%` }} role="progressbar" aria-valuenow={progress} aria-valuenmin={0} aria-valuenmax={100} />
                 </div>
               </div>
 

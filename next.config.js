@@ -15,6 +15,7 @@ const withPWA = require('@ducanh2912/next-pwa').default({
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  output: 'standalone', // Essential for Docker build compatibility in Next.js 14
   async headers() {
     return [
       {
