@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
 import { QUEUE_GATES } from '@/lib/queue-constants';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 
-const AIChatBot = dynamic(() => import('@/components/AIChatBot'), { ssr: false });
+const AIChatBot = nextDynamic(() => import('@/components/AIChatBot'), { ssr: false });
 
 export const dynamic = 'force-dynamic';
 
