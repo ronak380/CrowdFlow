@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     const systemInstruction = "You are CrowdBot, an official AI assistant for Wankhede Stadium's CrowdFlow queue management system. Keep answers helpful, concise, and related to stadium navigation, queues, rules, and waiting times. Maximum 2 sentences.";
     
@@ -27,21 +27,9 @@ export async function POST(req: NextRequest) {
     console.error('Gemini API Error:', error);
     const errorMsg = error?.message || 'Unknown network error';
     
-    try {
-      // If it fails, let's fetch the exact list of models this API key actually has access to
-      const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
-      const modelsData = await modelsRes.json();
-      const availableModels = modelsData?.models?.map((m: any) => m.name.replace('models/', '')).join(', ') || 'none';
-      
-      return NextResponse.json(
-        { error: `Failed: ${errorMsg}. Your allowed models: ${availableModels}` }, 
-        { status: 500 }
-      );
-    } catch {
-      return NextResponse.json(
-        { error: `Failed: ${errorMsg}` }, 
-        { status: 500 }
-      );
-    }
+    return NextResponse.json(
+      { error: `Failed: ${errorMsg}` }, 
+      { status: 500 }
+    );
   }
 }
