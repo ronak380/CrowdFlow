@@ -151,7 +151,7 @@ export default function CheckinPage() {
                   loading="lazy"
                   allowFullScreen
                   referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}&q=Wankhede+Stadium,Mumbai`}
+                  src="https://maps.google.com/maps?q=Wankhede+Stadium,Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 />
               </div>
 
