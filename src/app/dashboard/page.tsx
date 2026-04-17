@@ -2,6 +2,8 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
 import { useSlot, useQueue, estimatedWaitMins } from '@/hooks/useQueue';
 import { QUEUE_GATES } from '@/lib/queue-constants';
@@ -43,6 +45,7 @@ export default function DashboardPage() {
           {profile.role === 'admin' && (
             <Link href="/admin" className="btn btn-ghost btn-sm">🛡 Admin</Link>
           )}
+          <button onClick={() => signOut(auth)} className="btn btn-ghost btn-sm">Sign Out</button>
           <Link href="/queue" className="btn btn-ghost btn-sm">📍 Queue</Link>
         </div>
       </nav>
