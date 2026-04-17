@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { VENUE } from '@/lib/geofence';
 
+export const dynamic = 'force-dynamic';
+
 const FEATURES = [
   { icon: '📝', title: 'Register Once', desc: 'Create your profile with your match ticket ID before the event.' },
   { icon: '📍', title: 'Arrive & Check In', desc: 'Within 300m of Wankhede? The check-in button activates automatically.' },
