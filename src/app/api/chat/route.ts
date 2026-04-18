@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Reverting to 1.5-flash which has a much higher free-tier quota (avoiding 429 errors)
+    // Upgraded to 2.5-flash as requested (Stable and robust for 2026)
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY.trim());
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     const systemInstruction = "You are CrowdBot, an official AI assistant for Wankhede Stadium's CrowdFlow queue management system. Keep answers helpful, concise, and related to stadium navigation, queues, rules, and waiting times. Maximum 2 sentences.";
     
