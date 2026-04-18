@@ -79,6 +79,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {firebaseConfig.gtmId && <GoogleTagManager gtmId={firebaseConfig.gtmId} />}
       </head>
       <body className={inter.className}>
+        {/* Google Tag Manager (noscript) - Standards Compliance */}
+        {firebaseConfig.gtmId && (
+          <noscript>
+            <iframe 
+              src={`https://www.googletagmanager.com/ns.html?id=${firebaseConfig.gtmId}`}
+              height="0" 
+              width="0" 
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
+        )}
         <ConfigGuard>
           {children}
         </ConfigGuard>

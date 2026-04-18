@@ -32,7 +32,7 @@ export function getFirebaseRuntimeConfig(): FirebaseConfig {
     vapidKey:          (process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || process.env.FIREBASE_VAPID_KEY || '').trim(),
     mapsApiKey:        (process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.MAPS_API_KEY || '').trim(),
     gaMeasurementId:   (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID || '').trim(),
-    gtmId:             (process.env.NEXT_PUBLIC_GTM_ID || 'GTM-NWX352C6').trim(),
+    gtmId:             (process.env.NEXT_PUBLIC_GTM_ID || 'GTM-5MRTLKQB').trim(),
   };
 }
 
