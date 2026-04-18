@@ -10,8 +10,9 @@ export interface FirebaseConfig {
   messagingSenderId?: string;
   appId?: string;
   measurementId?: string;
-  vapidKey?: string;
-  mapsApiKey?: string;
+  vapidKey?:          string;
+  mapsApiKey?:        string;
+  gaMeasurementId?:   string;
 }
 
 /**
@@ -29,6 +30,7 @@ export function getFirebaseRuntimeConfig(): FirebaseConfig {
     measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || process.env.FIREBASE_MEASUREMENT_ID,
     vapidKey:          process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || process.env.FIREBASE_VAPID_KEY,
     mapsApiKey:        process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.MAPS_API_KEY,
+    gaMeasurementId:   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.GA_MEASUREMENT_ID,
   };
 }
 
@@ -51,5 +53,6 @@ export function getClientConfig(): FirebaseConfig {
     measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     vapidKey:          process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
     mapsApiKey:        process.env.NEXT_PUBLIC_MAPS_API_KEY,
+    gaMeasurementId:   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   };
 }

@@ -58,8 +58,8 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const firebaseConfig = getFirebaseRuntimeConfig();
+  const gaMeasurementId = firebaseConfig.gaMeasurementId;
 
   return (
     <html lang="en">
