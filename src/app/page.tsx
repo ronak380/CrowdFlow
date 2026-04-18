@@ -63,8 +63,8 @@ export default function LandingPage() {
         </p>
 
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 72 }}>
-          <Link href="/register" className="btn btn-primary btn-lg" id="cta-register">Get Your Queue Number →</Link>
-          <Link href="/login"    className="btn btn-ghost btn-lg"  id="cta-login">Sign In</Link>
+          <Link href="/register" className="btn btn-primary btn-lg" id="cta-register" aria-label="Get Your Queue Number Now">Get Your Queue Number →</Link>
+          <Link href="/login"    className="btn btn-ghost btn-lg"  id="cta-login" aria-label="Sign In to your account">Sign In</Link>
         </div>
 
         {/* Stats */}

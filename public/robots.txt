@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://crowdflow-stadium.web.app/sitemap.xml

@@ -40,13 +40,13 @@ export default function DashboardPage() {
       <div className="orb orb-blue" style={{ width: 400, height: 400, top: -100, right: -100 }} aria-hidden />
 
       <nav className="navbar">
-        <Link href="/dashboard" className="navbar-logo">⚡ CrowdFlow</Link>
+        <Link href="/dashboard" className="navbar-logo" aria-label="CrowdFlow Home">⚡ CrowdFlow</Link>
         <div className="navbar-actions">
           {profile.role === 'admin' && (
-            <Link href="/admin" className="btn btn-ghost btn-sm">🛡 Admin</Link>
+            <Link href="/admin" className="btn btn-ghost btn-sm" aria-label="Administrator Panel">🛡 Admin</Link>
           )}
-          <button onClick={() => signOut(auth)} className="btn btn-ghost btn-sm">Sign Out</button>
-          <Link href="/queue" className="btn btn-ghost btn-sm">📍 Queue</Link>
+          <button onClick={() => signOut(auth)} className="btn btn-ghost btn-sm" aria-label="Sign Out">Sign Out</button>
+          <Link href="/queue" className="btn btn-ghost btn-sm" aria-label="View Queue Status">📍 Queue</Link>
         </div>
       </nav>
 

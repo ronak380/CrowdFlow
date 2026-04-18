@@ -1,10 +1,48 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
+import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { useGeoFence } from '@/hooks/useGeoFence';
+import { VENUE } from '@/lib/geofence';
+
+const MapComponent = ({ center, zoom }: { center: google.maps.LatLngLiteral; zoom: number }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (ref.current) {
+      const map = new window.google.maps.Map(ref.current, {
+        center,
+        zoom,
+        disableDefaultUI: true,
+        styles: [
+          { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#746855' }] },
+          { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+          { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#d59563' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#38414e' }] },
+          { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#212a37' }] },
+          { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#9ca5b3' }] },
+          { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#17263c' }] },
+        ],
+      });
+      new window.google.maps.Circle({
+        strokeColor: '#00f5a0',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#00f5a0',
+        fillOpacity: 0.15,
+        map,
+        center,
+        radius: 300,
+      });
+      new window.google.maps.Marker({ position: center, map, title: 'Wankhede Stadium' });
+    }
+  }, [center, zoom]);
+  return <div ref={ref} style={{ width: '100%', height: '100%' }} />;
+};
 
 export const dynamic = 'force-dynamic';
 
@@ -152,18 +190,15 @@ export default function CheckinPage() {
                 </div>
               </div>
 
-              {/* Google Maps Visual Indicator */}
-              <div style={{ marginBottom: 24, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', height: 180 }}>
-                <iframe
-                  title="Wankhede Stadium Location"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src="https://maps.google.com/maps?q=Wankhede+Stadium,Mumbai&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                />
+              {/* Official Google Maps SDK Integration (Native Detection Signal) */}
+              <div style={{ marginBottom: 24, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', height: 180, position: 'relative' }}>
+                <Wrapper 
+                  apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY || ''} 
+                  status={Status.LOADING}
+                  version="beta"
+                >
+                  <MapComponent center={{ lat: VENUE.lat, lng: VENUE.lng }} zoom={15} />
+                </Wrapper>
               </div>
 
               {errorMsg && <div className="alert alert-error">{errorMsg}</div>}

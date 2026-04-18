@@ -25,6 +25,7 @@ export default function AdminPage() {
   const [actions, setActions] = useState<ActionState>({});
   const [seedStatus, setSeedStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [missedStatus, setMissedStatus] = useState<'idle' | 'loading' | 'done'>('idle');
+  const [resetStatus, setResetStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
   const [missedCount, setMissedCount] = useState<number | null>(null);
   const [advanceError, setAdvanceError] = useState('');
 
@@ -71,6 +72,23 @@ export default function AdminPage() {
     }
   }
 
+  async function handleReset() {
+    if (!window.confirm('Are you sure? This will delete ALL slots and reset all queues to 0.')) return;
+    setResetStatus('loading');
+    try {
+      const token = await auth.currentUser?.getIdToken();
+      const res = await fetch('/api/reset', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setResetStatus(res.ok ? 'done' : 'error');
+      setTimeout(() => setResetStatus('idle'), 3000);
+    } catch {
+      setResetStatus('error');
+      setTimeout(() => setResetStatus('idle'), 3000);
+    }
+  }
+
   async function handleProcessMissed() {
     setMissedStatus('loading');
     try {
@@ -100,10 +118,10 @@ export default function AdminPage() {
       <div className="orb orb-blue" style={{ width: 400, height: 400, top: -100, right: -80 }} aria-hidden />
 
       <nav className="navbar">
-        <Link href="/admin" className="navbar-logo">⚡ CrowdFlow</Link>
+        <Link href="/admin" className="navbar-logo" aria-label="CrowdFlow Home">⚡ CrowdFlow</Link>
         <div className="navbar-actions">
           <span style={{ color: 'var(--amber)', fontWeight: 700, fontSize: '0.85rem' }}>🛡 Admin</span>
-          <button onClick={() => signOut(auth).then(() => router.push('/login'))} className="btn btn-ghost btn-sm">Sign Out</button>
+          <button onClick={() => signOut(auth).then(() => router.push('/login'))} className="btn btn-ghost btn-sm" aria-label="Sign Out">Sign Out</button>
         </div>
       </nav>
 
@@ -226,6 +244,24 @@ export default function AdminPage() {
               >
                 {missedStatus === 'loading' ? <><span className="spinner" />Running…</> :
                  missedStatus === 'done'    ? '✓ Done' : '⏰ Run Now'}
+              </button>
+            </div>
+
+            <div className="card card-pad-sm" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, border: '1px solid var(--danger-dim)' }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: '0.92rem', color: 'var(--danger)' }}>Reset Stadium System</div>
+                <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>⚠️ Destructive: Clears all slots and resets all gate numbers to 0</div>
+              </div>
+              <button
+                id="btn-reset-system"
+                onClick={handleReset}
+                disabled={resetStatus === 'loading'}
+                className={`btn btn-sm ${resetStatus === 'done' ? 'btn-success' : resetStatus === 'error' ? 'btn-danger' : 'btn-danger'}`}
+                style={{ background: resetStatus === 'idle' ? 'var(--danger-dim)' : undefined }}
+              >
+                {resetStatus === 'loading' ? <><span className="spinner" />Resetting…</> :
+                 resetStatus === 'done'    ? '✓ System Reset' :
+                 resetStatus === 'error'   ? '✗ Error' : '🔥 Reset All'}
               </button>
             </div>
           </div>
