@@ -8,7 +8,7 @@ import { Wrapper, Status } from '@googlemaps/react-wrapper';
 import { useGeoFence } from '@/hooks/useGeoFence';
 import { VENUE } from '@/lib/geofence';
 
-const MapComponent = ({ center, zoom }: { center: google.maps.LatLngLiteral; zoom: number }) => {
+const MapComponent = ({ center, zoom }: { center: any; zoom: number }) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (ref.current) {
