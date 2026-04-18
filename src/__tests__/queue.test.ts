@@ -2,11 +2,11 @@
  * @jest-environment node
  */
 import { assignQueue, advanceQueue } from '../lib/queue';
-import { adminDb } from '../lib/firebase-admin';
+import { getAdminDb } from '../lib/firebase-admin';
 
 // Mock Firebase Admin
 jest.mock('../lib/firebase-admin', () => ({
-  adminDb: {
+  getAdminDb: jest.fn(() => ({
     runTransaction: jest.fn(),
     collection: jest.fn(() => ({
       doc: jest.fn(() => ({
@@ -18,7 +18,7 @@ jest.mock('../lib/firebase-admin', () => ({
         })),
       })),
     })),
-  },
+  })),
 }));
 
 describe('Queue Assignment Logic', () => {
@@ -27,7 +27,7 @@ describe('Queue Assignment Logic', () => {
   });
 
   test('assignQueue should fail if user not found', async () => {
-    (adminDb.runTransaction as jest.Mock).mockImplementation(async (cb) => {
+    (getAdminDb() as any).runTransaction.mockImplementation(async (cb: any) => {
       const transaction = {
         get: jest.fn().mockResolvedValue({ exists: false }),
         set: jest.fn(),
@@ -42,7 +42,7 @@ describe('Queue Assignment Logic', () => {
   });
 
   test('assignQueue should succeed if queues available', async () => {
-    (adminDb.runTransaction as jest.Mock).mockImplementation(async (cb) => {
+    (getAdminDb() as any).runTransaction.mockImplementation(async (cb: any) => {
       const transaction = {
         get: jest.fn((ref) => {
           if (ref.path === 'users/user1') return { exists: true, data: () => ({ name: 'Test' }) };
