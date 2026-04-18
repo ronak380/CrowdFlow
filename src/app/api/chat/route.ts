@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
     
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
-        { error: 'Gemini API key is not configured in Cloud Run.' }, 
-        { status: 500 }
+        { error: 'Vertex AI / Gemini API Configuration Missing. Please ensure GEMINI_API_KEY is set in Cloud Run.' }, 
+        { status: 503 }
       );
     }
 

@@ -220,6 +220,7 @@ export default function AdminPage() {
                 onClick={handleSeed}
                 disabled={seedStatus === 'loading'}
                 className={`btn btn-sm ${seedStatus === 'done' ? 'btn-success' : seedStatus === 'error' ? 'btn-danger' : 'btn-ghost'}`}
+                aria-label="Seed initial gate documents in the database"
               >
                 {seedStatus === 'loading' ? <><span className="spinner" />Seeding…</> :
                  seedStatus === 'done'    ? '✓ Seeded' :
@@ -241,6 +242,7 @@ export default function AdminPage() {
                 onClick={handleProcessMissed}
                 disabled={missedStatus === 'loading'}
                 className={`btn btn-sm ${missedStatus === 'done' ? 'btn-success' : 'btn-amber'}`}
+                aria-label="Process and expire overdue queue slots"
               >
                 {missedStatus === 'loading' ? <><span className="spinner" />Running…</> :
                  missedStatus === 'done'    ? '✓ Done' : '⏰ Run Now'}
@@ -258,6 +260,7 @@ export default function AdminPage() {
                 disabled={resetStatus === 'loading'}
                 className={`btn btn-sm ${resetStatus === 'done' ? 'btn-success' : resetStatus === 'error' ? 'btn-danger' : 'btn-danger'}`}
                 style={{ background: resetStatus === 'idle' ? 'var(--danger-dim)' : undefined }}
+                aria-label="Danger: Reset the entire stadium system data"
               >
                 {resetStatus === 'loading' ? <><span className="spinner" />Resetting…</> :
                  resetStatus === 'done'    ? '✓ System Reset' :

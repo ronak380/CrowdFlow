@@ -11,7 +11,7 @@ import { VENUE } from '@/lib/geofence';
 const MapComponent = ({ center, zoom }: { center: any; zoom: number }) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && typeof window !== 'undefined' && window.google && window.google.maps) {
       const map = new window.google.maps.Map(ref.current, {
         center,
         zoom,

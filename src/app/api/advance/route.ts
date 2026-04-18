@@ -39,11 +39,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'advance_failed' }, { status: 500 });
   }
 
-  // 5. Notify the next user in line (non-blocking)
-  const newServing = result.newServing!;
-  notifyNextUser(queueId, newServing).catch(() => {});
-  // Also notify user after that (heads-up: "you're next")
-  notifyNextUser(queueId, newServing + 1, true).catch(() => {});
+  // 5. Notify users (non-blocking, defensive checks)
+  const newServing = result.newServing;
+  if (typeof newServing === 'number' && newServing > 0) {
+    notifyNextUser(queueId, newServing).catch(err => {
+      console.error(`FCM Notify Error (Serving):`, err);
+    });
+    // Also notify user after that (heads-up: "you're next")
+    notifyNextUser(queueId, newServing + 1, true).catch(err => {
+      console.error(`FCM Notify Error (Heads-up):`, err);
+    });
+  }
 
   return NextResponse.json({ success: true, newServing });
 }
