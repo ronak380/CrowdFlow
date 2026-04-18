@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/hooks/useAuth';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
+import { Wrapper } from '@googlemaps/react-wrapper';
 import { useGeoFence } from '@/hooks/useGeoFence';
 import { VENUE } from '@/lib/geofence';
 
@@ -192,11 +192,7 @@ export default function CheckinPage() {
 
               {/* Official Google Maps SDK Integration (Native Detection Signal) */}
               <div style={{ marginBottom: 24, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', height: 180, position: 'relative' }}>
-                <Wrapper 
-                  apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY || ''} 
-                  status={Status.LOADING}
-                  version="beta"
-                >
+                <Wrapper apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY || ''}>
                   <MapComponent center={{ lat: VENUE.lat, lng: VENUE.lng }} zoom={15} />
                 </Wrapper>
               </div>
