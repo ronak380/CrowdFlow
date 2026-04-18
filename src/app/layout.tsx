@@ -76,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Google Analytics & GTM (Official Next.js Third-Party Packages) */}
         {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
-        <GoogleTagManager gtmId="GTM-NWX352C6" />
+        {firebaseConfig.gtmId && <GoogleTagManager gtmId={firebaseConfig.gtmId} />}
       </head>
       <body className={inter.className}>
         <ConfigGuard>

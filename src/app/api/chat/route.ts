@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Explicitly using the stable 'v1' API to avoid 404s common in 'v1beta'
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }, { apiVersion: 'v1' });
+    // Using gemini-2.0-flash for maximum stability and performance
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY.trim());
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     
     const systemInstruction = "You are CrowdBot, an official AI assistant for Wankhede Stadium's CrowdFlow queue management system. Keep answers helpful, concise, and related to stadium navigation, queues, rules, and waiting times. Maximum 2 sentences.";
     

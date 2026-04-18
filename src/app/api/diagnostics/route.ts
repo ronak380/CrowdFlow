@@ -14,7 +14,12 @@ export async function GET() {
     'FIREBASE_PROJECT_ID',
     'FIREBASE_CLIENT_EMAIL',
     'FIREBASE_PRIVATE_KEY',
-    'CRON_SECRET'
+    'CRON_SECRET',
+    'GEMINI_API_KEY',
+    'MAPS_API_KEY',
+    'NEXT_PUBLIC_MAPS_API_KEY',
+    'NEXT_PUBLIC_GA_MEASUREMENT_ID',
+    'GA_MEASUREMENT_ID'
   ];
 
   const results: Record<string, string> = {};
