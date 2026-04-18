@@ -11,6 +11,7 @@ export interface FirebaseConfig {
   appId?: string;
   measurementId?: string;
   vapidKey?: string;
+  mapsApiKey?: string;
 }
 
 /**
@@ -27,6 +28,7 @@ export function getFirebaseRuntimeConfig(): FirebaseConfig {
     appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID,
     measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || process.env.FIREBASE_MEASUREMENT_ID,
     vapidKey:          process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || process.env.FIREBASE_VAPID_KEY,
+    mapsApiKey:        process.env.NEXT_PUBLIC_MAPS_API_KEY || process.env.MAPS_API_KEY,
   };
 }
 
@@ -48,5 +50,6 @@ export function getClientConfig(): FirebaseConfig {
     appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId:     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
     vapidKey:          process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+    mapsApiKey:        process.env.NEXT_PUBLIC_MAPS_API_KEY,
   };
 }

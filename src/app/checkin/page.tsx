@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { useGeoFence } from '@/hooks/useGeoFence';
 import { VENUE } from '@/lib/geofence';
+import { getClientConfig } from '@/lib/runtime-config';
 
 const MapComponent = ({ center, zoom }: { center: any; zoom: number }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -192,7 +193,7 @@ export default function CheckinPage() {
 
               {/* Official Google Maps SDK Integration (Native Detection Signal) */}
               <div style={{ marginBottom: 24, borderRadius: 12, overflow: 'hidden', border: '1px solid var(--border)', height: 180, position: 'relative' }}>
-                <Wrapper apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY || ''}>
+                <Wrapper apiKey={getClientConfig().mapsApiKey || ''}>
                   <MapComponent center={{ lat: VENUE.lat, lng: VENUE.lng }} zoom={15} />
                 </Wrapper>
               </div>
